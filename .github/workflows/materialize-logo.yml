@@ -1,0 +1,28 @@
+name: materialize-logo
+on:
+  push:
+    paths:
+      - ".github/workflows/materialize-logo.yml"
+      - "assets/.logo.b64.part1"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode PNG, replace SVG, remove staging
+        run: |
+          set -euo pipefail
+          cat assets/.logo.b64.part1 assets/.logo.b64.part2 assets/.logo.b64.part3 | tr -d '\n\r ' | base64 -d > assets/logo.png
+          echo "02f95e459771bb7a698f31cf34bda8c5ea78ef0639b2af83861de49dba209f64  assets/logo.png" | sha256sum -c
+          file assets/logo.png
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f assets/logo.svg || true
+          git rm -f assets/.logo.b64.part1 assets/.logo.b64.part2 assets/.logo.b64.part3
+          git rm -f .github/workflows/materialize-logo.yml
+          git add assets/logo.png
+          git commit -m "Replace plugin logo with PNG mark"
+          git push
