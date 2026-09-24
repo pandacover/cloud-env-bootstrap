@@ -1,0 +1,18 @@
+{
+  "name": "cloud-env-bootstrap",
+  "version": "0.1.0",
+  "description": "Bootstrap Cursor Cloud Agent environments: detect stack, write environment.json and install scripts, list secrets, and keep validation tight so Builds start fast.",
+  "author": {
+    "name": "Luv"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/pandacover/cloud-env-bootstrap",
+  "keywords": [
+    "cloud-agents",
+    "environment",
+    "builds",
+    "cursor",
+    "bootstrap"
+  ],
+  "logo": "assets/logo.svg"
+}

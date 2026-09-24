@@ -1,0 +1,33 @@
+---
+description: When discussing Cloud Agents, prefer Builds and environment.json install over per-run cold installs; keep agent validation narrower than full CI.
+alwaysApply: false
+globs:
+  - .cursor/environment.json
+  - .cursor/Dockerfile
+  - .cursor/install.sh
+  - AGENTS.md
+  - "**/.env.example"
+---
+
+# Prefer Cloud Agent Builds
+
+Apply this rule when the task involves Cursor Cloud Agents, `.cursor/environment.json`, Cloud Agent Builds, install/start scripts, or speeding up remote agents.
+
+## Builds over cold installs
+
+- Put clone-time and dependency work in `.cursor/environment.json` `install` so **Builds** bake it once. Do not tell the agent to re-run a full install at the start of every cloud session unless lockfiles changed.
+- `install` must be idempotent, non-interactive, and must exit. Use lockfile-accurate commands (`pnpm install --frozen-lockfile`, `npm ci`, `uv sync --frozen`, `go mod download`).
+- Builds snapshot **disk**, not processes. Long-running services belong in `start` or `terminals` (for example `sudo service docker start`). Dev servers usually belong in AGENTS.md (`pnpm dev`), not in `install`.
+- A committed `.cursor/environment.json` overrides personal/team dashboard environments for that repo. Change it carefully; diff before replacing a working file.
+- After config changes, the human still needs to create or refresh the Cloud Agent environment so a Build runs. Link https://cursor.com/docs/cloud-agent/setup and https://cursor.com/docs/cloud-agent/builds.
+
+## Validation narrower than CI
+
+- Cloud agent checks should be a short path: `pnpm typecheck`, `pnpm lint`, or tests for one package / affected surface.
+- Leave the full CI suite (e2e, every workspace package, coverage gates) to PR CI.
+- Put that short path in an `AGENTS.md` section titled `Cursor Cloud specific instructions`.
+
+## Secrets
+
+- Never commit secret values. List **names** from `.env.example` and send the user to https://cursor.com/dashboard/cloud-agents (Secrets / environment-scoped secrets).
+- Team and environment-scoped secrets are available during Builds; user secrets are not part of the shared snapshot.
