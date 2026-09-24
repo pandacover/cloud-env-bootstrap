@@ -120,7 +120,7 @@ See [setup](https://cursor.com/docs/cloud-agent/setup) and [Builds](https://curs
 ├── .cursor-plugin/plugin.json
 ├── README.md
 ├── LICENSE
-├── assets/logo.svg
+├── assets/logo.png
 ├── commands/bootstrap-cloud-env.md
 ├── rules/prefer-cloud-builds.mdc
 └── skills/
